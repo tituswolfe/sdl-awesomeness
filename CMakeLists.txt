@@ -26,7 +26,9 @@ FetchContent_MakeAvailable(SDL3)
 find_package(OpenGL REQUIRED)
 
 # 5. Define your executable
-add_executable(My3DEngine Code/src/main/main.cpp)
+add_executable(My3DEngine Code/src/main/main.cpp
+        code/src/main/telemetry.cpp
+        code/src/main/telemetry.h)
 
 # 6. Link against the SDL3 target created by FetchContent
 # Use SDL3::SDL3-shared or SDL3::SDL3-static depending on preference
