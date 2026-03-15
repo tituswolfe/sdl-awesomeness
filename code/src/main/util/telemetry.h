@@ -20,6 +20,14 @@ static void addTelemetry(const std::string& line) {
     telemetryLines.push_back(line);
 }
 
+static void addTelemetry(const std::string& name, const Uint64 value) {
+    addTelemetry(name + ": " + std::to_string(value));
+}
+
+static void addTelemetry(const std::string& name, const double value) {
+    addTelemetry(name + ": " + std::to_string(value));
+}
+
 static void updateTelemetry(SDL_Renderer *renderer) {
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
