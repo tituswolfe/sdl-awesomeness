@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(My3DEngine CXX)
+project(SDLAwesomeness CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
