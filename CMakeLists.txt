@@ -27,8 +27,12 @@ find_package(OpenGL REQUIRED)
 
 # 5. Define your executable
 add_executable(My3DEngine Code/src/main/main.cpp
-        code/src/main/telemetry.cpp
-        code/src/main/telemetry.h)
+        code/src/main/util/telemetry.cpp
+        code/src/main/util/telemetry.h
+        code/src/main/geometry/Vertex.cpp
+        code/src/main/geometry/Vertex.h
+        code/src/main/math/Vector.cpp
+        code/src/main/math/Vector.h)
 
 # 6. Link against the SDL3 target created by FetchContent
 # Use SDL3::SDL3-shared or SDL3::SDL3-static depending on preference

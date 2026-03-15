@@ -18,7 +18,7 @@
 #include <SDL3/SDL_main.h>
 #include <string>
 #include <list>
-#include "telemetry.h"
+#include "util/telemetry.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -43,16 +43,16 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     return SDL_APP_CONTINUE;
 }
 
-/* This function runs when a new event (mouse input, keypresses, etc) occurs. */
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
     if (event->type == SDL_EVENT_QUIT) {
-        return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+        return SDL_APP_SUCCESS;
     }
-    return SDL_APP_CONTINUE;  /* carry on with the program! */
+    return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
     const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
+    const double runtimeSec = SDL_GetTicks() / 1000.0;
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);
@@ -63,11 +63,11 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     SDL_RenderDebugText(renderer, 50, 0, "Hello Jonny!");
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 
-    addTelemetry("Hello Jonny!");
-    addTelemetry("YOLO");
+    addTelemetry("SDL Awesomeness");
+    addTelemetry("Runtime Sec", static_cast<Uint64>(runtimeSec));
+    addTelemetry("cos(runtime)", cos(runtimeSec));
+    addTelemetry("sin(runtime)", sin(runtimeSec));
     updateTelemetry(renderer);
-
-    SDL_RenderDebugTextFormat(renderer, (float) ((WINDOW_WIDTH - (charsize * 46)) / 2), 400, "(This program has been running for %" SDL_PRIu64 " seconds.)", SDL_GetTicks() / 1000);
 
     SDL_RenderPresent(renderer);
 
