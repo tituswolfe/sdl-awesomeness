@@ -32,7 +32,9 @@ add_executable(My3DEngine Code/src/main/main.cpp
         code/src/main/geometry/Vertex.cpp
         code/src/main/geometry/Vertex.h
         code/src/main/math/Vector.cpp
-        code/src/main/math/Vector.h)
+        code/src/main/math/Vector.h
+        code/src/main/rendering/camera.cpp
+        code/src/main/rendering/camera.h)
 
 # 6. Link against the SDL3 target created by FetchContent
 # Use SDL3::SDL3-shared or SDL3::SDL3-static depending on preference

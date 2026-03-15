@@ -9,7 +9,7 @@
 #include <SDL3/SDL_main.h>
 #include <string>
 #include <list>
-#include "util/telemetry.h"
+#include "util/Telemetry.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;

@@ -13,7 +13,7 @@ static constexpr int LINE_SPACING = 10;
 
 static std::list<std::string> telemetryLines;
 
-class telemetry {
+class Telemetry {
 };
 
 static void addTelemetry(const std::string& line) {
