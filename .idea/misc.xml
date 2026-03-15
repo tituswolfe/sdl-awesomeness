@@ -6,7 +6,7 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <sourceRoots>
-      <file path="$PROJECT_DIR$/Code" />
+      <file path="$PROJECT_DIR$/code" />
     </sourceRoots>
   </component>
 </project>
