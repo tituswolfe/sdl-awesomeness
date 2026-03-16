@@ -10,6 +10,7 @@
 #include <string>
 #include <list>
 #include "util/Telemetry.h"
+#include "util/RollingAverage.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -21,6 +22,10 @@ static SDL_Renderer *renderer = NULL;
 #define WINDOW_TITLE "SDL Awesomeness"
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
+
+Uint64 lastTime = 0;
+
+RollingAverage deltaTimeAverage = RollingAverage(50);
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     SDL_Log("SDL_AppInit");
@@ -61,7 +66,12 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
 SDL_AppResult SDL_AppIterate(void *appstate) {
     const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
-    const double runtimeSec = SDL_GetTicks() / 1000.0;
+
+    Uint64 currentTime = SDL_GetTicks();
+    const Uint64 deltaTime = currentTime - lastTime;
+    deltaTimeAverage.addSample(deltaTime);
+
+    const double runtimeSec = currentTime / 1000.0;
     const double cosRuntime = cos(runtimeSec);
     const double sinRuntime = sin(runtimeSec);
     const double tanRuntime = tan(runtimeSec);
@@ -76,8 +86,8 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 
     SDL_FRect rect = {
-        (float) (WINDOW_WIDTH / 2 + sinRuntime * 100.0),
-        (float) (WINDOW_HEIGHT / 2 + cosRuntime * 100.0),
+        (float) (WINDOW_WIDTH / 2 + cosRuntime * 100.0),
+        (float) (WINDOW_HEIGHT / 2 + sinRuntime * 100.0),
         50,
         50
     };
@@ -87,9 +97,13 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     addTelemetry("Runtime Sec", static_cast<Uint64>(runtimeSec));
     addTelemetry("cos(runtime)", cosRuntime);
     addTelemetry("sin(runtime)", sinRuntime);
+    addTelemetry("delta time (ms)", (float) deltaTime);
+    addTelemetry("avrg. delta time (ms)", (float) deltaTimeAverage.getAverage());
     updateTelemetry(renderer);
 
     SDL_RenderPresent(renderer);
+
+    lastTime = currentTime;
 
     return SDL_APP_CONTINUE;
 }
