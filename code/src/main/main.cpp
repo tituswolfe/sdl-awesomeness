@@ -102,7 +102,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     // SDL_Vertex vertices[];
     // SDL_RenderGeometry(renderer, &texture, vertices, 3, NULL, 5);
 
-    addTelemetry("SDL Awesomeness - Press T to toggle elemetry display");
+    addTelemetry("SDL Awesomeness - Press T to toggle telemetry display");
     addTelemetry("Runtime Sec", runtimeSec);
     addTelemetry("cos(runtime)", cosRuntime);
     addTelemetry("sin(runtime)", sinRuntime);
