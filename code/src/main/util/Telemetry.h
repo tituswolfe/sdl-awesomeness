@@ -10,6 +10,7 @@
 #include "SDL3/SDL_render.h"
 
 static constexpr int LINE_SPACING = 10;
+static bool isEnabled = true;
 
 static std::list<std::string> telemetryLines;
 
@@ -29,6 +30,11 @@ static void addTelemetry(const std::string& name, const double value) {
 }
 
 static void updateTelemetry(SDL_Renderer *renderer) {
+    if (!isEnabled) {
+        telemetryLines.clear();
+        return;
+    }
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 
@@ -39,6 +45,14 @@ static void updateTelemetry(SDL_Renderer *renderer) {
     }
 
     telemetryLines.clear();
+}
+
+static void setIsEnabled(bool val) {
+    isEnabled = val;
+}
+
+static bool getIsEnabled() {
+    return isEnabled;
 }
 
 

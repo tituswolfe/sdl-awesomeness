@@ -11,6 +11,7 @@
 #include <list>
 #include "util/Telemetry.h"
 #include "util/RollingAverage.h"
+#include "util/Convert.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
@@ -25,7 +26,7 @@ static SDL_Renderer *renderer = NULL;
 
 Uint64 lastTime = 0;
 
-RollingAverage deltaTimeAverage = RollingAverage(50);
+RollingAverage deltaTimeAverage = RollingAverage(200);
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     SDL_Log("SDL_AppInit");
@@ -52,8 +53,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 
     if (event->type == SDL_EVENT_KEY_DOWN) {
         switch (event->key.key) {
-            case SDLK_A:
-                SDL_Log("THE USER PRESSED A OH NO!");
+            case SDLK_T:
+                setIsEnabled(!getIsEnabled());
                 break;
             case SDLK_ESCAPE:
                 return SDL_APP_SUCCESS;
@@ -67,16 +68,20 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
 SDL_AppResult SDL_AppIterate(void *appstate) {
     const int charsize = SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE;
 
-    Uint64 currentTime = SDL_GetTicks();
-    const Uint64 deltaTime = currentTime - lastTime;
-    deltaTimeAverage.addSample(deltaTime);
+    const Uint64 runtimeNS = SDL_GetTicksNS();
+    const double runtimeSec = nsToSec(runtimeNS);
+    const Uint64 deltaTimeNS = runtimeNS - lastTime;
+    const double deltaTimeMS = nsToMs(deltaTimeNS);
+    const double deltaTimeSec = nsToSec(deltaTimeNS);
+    const double framesPerSecond = 1 / deltaTimeSec;
 
-    const double runtimeSec = currentTime / 1000.0;
+    deltaTimeAverage.addSample(deltaTimeMS);
+
     const double cosRuntime = cos(runtimeSec);
     const double sinRuntime = sin(runtimeSec);
     const double tanRuntime = tan(runtimeSec);
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
+    SDL_SetRenderDrawColor(renderer, 0, 20, 100, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);  /* white, full alpha */
@@ -86,24 +91,30 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     SDL_SetRenderScale(renderer, 1.0f, 1.0f);
 
     SDL_FRect rect = {
-        (float) (WINDOW_WIDTH / 2 + cosRuntime * 100.0),
-        (float) (WINDOW_HEIGHT / 2 + sinRuntime * 100.0),
+        (float) (WINDOW_WIDTH / 2 + cosRuntime * 50),
+        (float) (WINDOW_HEIGHT / 2 + sinRuntime * 50),
         50,
         50
     };
     SDL_RenderFillRect(renderer, &rect);
 
-    addTelemetry("SDL Awesomeness");
-    addTelemetry("Runtime Sec", static_cast<Uint64>(runtimeSec));
+    // SDL_Texture texture = SDL_Texture();
+    // SDL_Vertex vertices[];
+    // SDL_RenderGeometry(renderer, &texture, vertices, 3, NULL, 5);
+
+    addTelemetry("SDL Awesomeness - Press T to toggle elemetry display");
+    addTelemetry("Runtime Sec", runtimeSec);
     addTelemetry("cos(runtime)", cosRuntime);
     addTelemetry("sin(runtime)", sinRuntime);
-    addTelemetry("delta time (ms)", (float) deltaTime);
-    addTelemetry("avrg. delta time (ms)", (float) deltaTimeAverage.getAverage());
+    addTelemetry("delta time (ms)", deltaTimeMS);
+    addTelemetry("avrg. delta time (ms)", deltaTimeAverage.getAverage());
+    addTelemetry("fps", framesPerSecond);
     updateTelemetry(renderer);
+
 
     SDL_RenderPresent(renderer);
 
-    lastTime = currentTime;
+    lastTime = runtimeNS;
 
     return SDL_APP_CONTINUE;
 }

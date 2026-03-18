@@ -36,7 +36,9 @@ add_executable(My3DEngine Code/src/main/main.cpp
         code/src/main/rendering/camera.cpp
         code/src/main/rendering/camera.h
         code/src/main/util/RollingAverage.cpp
-        code/src/main/util/RollingAverage.h)
+        code/src/main/util/RollingAverage.h
+        code/src/main/util/Convert.cpp
+        code/src/main/util/Convert.h)
 
 # 6. Link against the SDL3 target created by FetchContent
 # Use SDL3::SDL3-shared or SDL3::SDL3-static depending on preference
