@@ -27,6 +27,7 @@ static SDL_Renderer *renderer = NULL;
 Uint64 lastTime = 0;
 
 RollingAverage deltaTimeAverage = RollingAverage(200);
+RollingAverage avgFPS = RollingAverage(1000);
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[]) {
     SDL_Log("SDL_AppInit");
@@ -76,6 +77,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     const double framesPerSecond = 1 / deltaTimeSec;
 
     deltaTimeAverage.addSample(deltaTimeMS);
+    avgFPS.addSample(framesPerSecond);
 
     const double cosRuntime = cos(runtimeSec);
     const double sinRuntime = sin(runtimeSec);
@@ -109,6 +111,7 @@ SDL_AppResult SDL_AppIterate(void *appstate) {
     addTelemetry("delta time (ms)", deltaTimeMS);
     addTelemetry("avrg. delta time (ms)", deltaTimeAverage.getAverage());
     addTelemetry("fps", framesPerSecond);
+    addTelemetry("Rolling Average FPS :)", avgFPS.getAverage());
     updateTelemetry(renderer);
 
 
